@@ -10,32 +10,25 @@ DB_NAME = "flightdb"
 DB_PORT = "3306"
 
 # Establish the database connection
-max_retries = 2
-retry_interval = 10  # seconds
-
 def establish_db_connection():
-    for attempt in range(max_retries):
-        try:
-            # Attempt to establish the MySQL database connection
-            db = mysql.connector.connect(
-                host=DB_HOST,
-                user=DB_USER,
-                password=DB_PASSWORD,
-                database=DB_NAME,
-                port=DB_PORT
-            )
+    try:
+        # Attempt to establish the MySQL database connection
+        db = mysql.connector.connect(
+            host=DB_HOST,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME,
+            port=DB_PORT
+        )
 
-            # If successful, return the connection object
-            return db
+        # If successful, return the connection object
+        return db
 
-        except mysql.connector.Error as e:
-            # Check if retry conditions are met
-            if attempt < max_retries - 1:
-                # Calculate next retry interval (e.g., fixed interval)
-                retry_delay = retry_interval
+    except mysql.connector.Error as e:
+        # Handle the error if connection establishment fails
+        handle_failure()
+        return None
 
-                # Wait for the retry interval
-                time.sleep(retry_delay)
 def handle_failure():
     print("Failed to establish a connection to the database.")
 
