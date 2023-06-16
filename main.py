@@ -1,6 +1,8 @@
 from datetime import *
 from flight_search import FlightSearch
 from data_manager import DataManager
+import json
+
 #from flask import Flask, request, jsonify
 
 # app = Flask(__name__)
@@ -59,26 +61,23 @@ for dest in sheet_dest_data:
                   f"{flight.departure_city} | {flight.departure_airport_code} " \
                   f"to {flight.dest_city} | {flight.dest_airport_code}, " \
                   f"from {flight.outbound_date} to {flight.inbound_date}.\n"
+        link = f"\nhttps://www.google.com/travel/flights?q=Flights%20to%20" \
+               f"{flight.dest_airport_code}%20from%20{flight.departure_airport_code}" \
+               f"%20on%20{flight.outbound_date}%20through%20{flight.inbound_date}"
 
         if flight.stop_overs == 0:
             result = {
                 "message": to_send,
-                "link": f"https://www.google.com/travel/flights?q=Flights%20to%20"
-                        f"{flight.dest_airport_code}%20from%20{flight.departure_airport_code}"
-                        f"%20on%20{flight.outbound_date}%20through%20{flight.inbound_date}"
+                "link": link
             }
         else:
-            stop_over = f"Flight has {flight.stop_overs} stop over, via {flight.via_city} City."
+            stop_over = f"\nFlight has {flight.stop_overs} stop over, via {flight.via_city} City.\n"
             result = {
                 "message": f"{to_send}\n{stop_over}",
-                "link": f"https://www.google.com/travel/flights?q=Flights%20to%20"
-                        f"{flight.dest_airport_code}%20from%20{flight.departure_airport_code}"
-                        f"%20on%20{flight.outbound_date}%20through%20{flight.inbound_date}"
+                "link": link
             }
 
-        results.append(result)
-
-    return jsonify(results)
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=3000)
+        result.append(result)
+results = json.dumps(result, indent=4)
+print(results)
 
