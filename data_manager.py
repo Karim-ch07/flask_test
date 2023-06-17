@@ -16,7 +16,7 @@ retry_interval = 10  # seconds
 
 class DataManager:
     def __init__(self):
-        self.db = establish_db_connection()
+        self.db = self.establish_db_connection()
         self.dest_info = []
         self.cx_info = []
 
