@@ -2,6 +2,8 @@ from datetime import *
 from flight_search import FlightSearch
 from data_manager import DataManager
 import json
+from pprint import pprint
+#from flask import Flask
 
 #from flask import Flask, request, jsonify
 
@@ -29,7 +31,7 @@ DEPARTURE_IATA = "POZ"
 tomorrow = datetime.now() + timedelta(days=1)
 six_months_later = tomorrow + timedelta(days=180)
 #emails = [cx_data["email"] for cx_data in sheet_cx_data]
-
+results = []
 for dest in sheet_dest_data:
     # search flights
     flight = flight_search.search_flights(
@@ -60,8 +62,8 @@ for dest in sheet_dest_data:
         to_send = f"Low Price Alert! Only {flight.lowestPrice} PLN to fly from " \
                   f"{flight.departure_city} | {flight.departure_airport_code} " \
                   f"to {flight.dest_city} | {flight.dest_airport_code}, " \
-                  f"from {flight.outbound_date} to {flight.inbound_date}.\n"
-        link = f"\nhttps://www.google.com/travel/flights?q=Flights%20to%20" \
+                  f"from {flight.outbound_date} to {flight.inbound_date}."
+        link = f"https://www.google.com/travel/flights?q=Flights%20to%20" \
                f"{flight.dest_airport_code}%20from%20{flight.departure_airport_code}" \
                f"%20on%20{flight.outbound_date}%20through%20{flight.inbound_date}"
 
@@ -71,13 +73,16 @@ for dest in sheet_dest_data:
                 "link": link
             }
         else:
-            stop_over = f"\nFlight has {flight.stop_overs} stop over, via {flight.via_city} City.\n"
+            stop_over = f"Flight has {flight.stop_overs} stop over, via {flight.via_city} City."
             result = {
                 "message": f"{to_send}\n{stop_over}",
                 "link": link
             }
+    results.append(result)
+#results = json.dumps(result, indent=4)
+pprint(results)
 
-        result.append(result)
-results = json.dumps(result, indent=4)
-print(results)
+
+# if __name__ == "__main__":
+#     app.run(host="0.0.0.0", port=3000)
 
