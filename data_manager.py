@@ -33,6 +33,7 @@ class DataManager:
                     database=DB_NAME,
                     port=DB_PORT
                 )
+                return self.db
 
             except mysql.connector.Error as e:
                 # Check if retry conditions are met
